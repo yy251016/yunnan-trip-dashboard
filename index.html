@@ -345,23 +345,89 @@ body {
 .tag-driver { background: #E8F5E9; color: #2E7D32; }
 .member-note { font-size: 0.72rem; color: #666; margin-top: 6px; line-height: 1.4; }
 
-/* ─── Weather ─── */
-.weather-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+/* ─── Realtime Weather ─── */
+.realtime-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.weather-card {
-  border-radius: 12px;
-  padding: 14px;
-  text-align: center;
+.realtime-bar::-webkit-scrollbar { display: none; }
+
+.city-tabs {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.city-tabs::-webkit-scrollbar { display: none; }
+
+.city-tab {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
   border: 1.5px solid var(--light-gray);
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
 }
-.weather-card .city { font-weight: 700; font-size: 0.85rem; margin-bottom: 4px; }
-.weather-card .temp { font-size: 1.8rem; font-weight: 800; line-height: 1; }
-.weather-card .condition { font-size: 0.72rem; color: #666; margin-top: 4px; }
-.weather-card .icon { font-size: 2rem; margin-bottom: 4px; }
-.weather-card .rain { font-size: 0.68rem; color: var(--blue); margin-top: 2px; font-weight: 600; }
+.city-tab.active {
+  background: var(--red);
+  color: white;
+  border-color: var(--red);
+}
+.city-tab:active { opacity: 0.8; transform: scale(0.97); }
+
+.locate-btn {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1.5px solid var(--blue);
+  background: white;
+  color: var(--blue);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.locate-btn:hover { background: var(--blue); color: white; }
+.locate-btn.locating { opacity: 0.6; pointer-events: none; }
+.locate-btn.located { border-color: var(--green); color: var(--green); }
+
+.realtime-weather {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 16px;
+  text-align: center;
+}
+.rt-loading { font-size: 0.82rem; color: #999; }
+.rt-weather { width: 100%; }
+.rt-city { font-size: 0.8rem; font-weight: 700; color: var(--brown); margin-bottom: 4px; }
+.rt-main { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.rt-temp { font-size: 2.5rem; font-weight: 800; color: var(--text); line-height: 1; }
+.rt-info { text-align: left; }
+.rt-condition { font-size: 0.85rem; color: #555; }
+.rt-detail { font-size: 0.72rem; color: #888; margin-top: 2px; }
+.rt-error { font-size: 0.8rem; color: #e07a5f; }
+
+.weather-note {
+  font-size: 0.68rem;
+  color: #aaa;
+  margin-top: 8px;
+  text-align: right;
+}
 
 /* ─── Budget ─── */
 .budget-bar {
@@ -634,8 +700,15 @@ body {
 
   <!-- Weather -->
   <div class="section card">
-    <div class="card-title">🌤️ 各地天气预报（6月中旬）</div>
-    <div class="weather-grid" id="weatherGrid"></div>
+    <div class="card-title">🌤️ 天气</div>
+    <div class="realtime-bar">
+      <div class="city-tabs" id="cityTabs"></div>
+      <button class="locate-btn" id="locateBtn" onclick="requestLocation()">📍 定位</button>
+    </div>
+    <div class="realtime-weather" id="realtimeWeather">
+      <div class="rt-loading">点击上方城市查看实时天气</div>
+    </div>
+    <div class="weather-note">6月中旬历史参考 · <span id="tripWeatherHint"></span></div>
   </div>
 
   <!-- Budget -->
@@ -1140,18 +1213,170 @@ function initMembers() {
 // ═══════════════════════════════════════════════
 // WEATHER
 // ═══════════════════════════════════════════════
-function initWeather() {
-  const container = document.getElementById('weatherGrid');
-  container.innerHTML = WEATHER_DATA.map(w => `
-    <div class="weather-card">
-      <div class="city">${w.city}</div>
-      <div class="date">${w.date}</div>
-      <div class="icon">${w.icon}</div>
-      <div class="temp">${w.temp}</div>
-      <div class="condition">${w.condition}</div>
-      ${w.rain ? `<div class="rain">☂️ ${w.rain}</div>` : ''}
+// ═══════════════════════════════════════════════
+// REALTIME WEATHER
+// ═══════════════════════════════════════════════
+const REALTIME_CITIES = [
+  { name: '昆明',     nameEn: 'Kunming',     hint: 'Day 2-3' },
+  { name: '抚仙湖',   nameEn: 'FuxianLake',  hint: 'Day 4-5' },
+  { name: '建水',     nameEn: 'Jianshui',    hint: 'Day 5-6' },
+  { name: '弥勒',     nameEn: 'Mile',        hint: 'Day 7'   },
+  { name: '曲靖',     nameEn: 'Qujing',      hint: 'Day 1/8' },
+];
+
+let currentRealtimeCity = null;
+let userLocated = false;
+
+function getWttrIcon(code) {
+  // Map wttr.in weather codes to text
+  const map = {
+    '113': '☀️', '116': '⛅', '119': '☁️',
+    '122': '☁️', '143': '🌫️', '176': '🌦️',
+    '200': '⛈️', '227': '🌨️', '230': '❄️',
+    '248': '🌫️', '260': '🌫️', '263': '🌧️',
+    '266': '🌧️', '281': '🌨️', '284': '🌨️',
+    '293': '🌧️', '296': '🌧️', '299': '🌧️',
+    '302': '🌧️', '305': '🌧️', '308': '🌧️',
+    '311': '🌨️', '314': '🌨️', '317': '🌨️',
+    '320': '🌨️', '323': '🌨️', '326': '🌨️',
+    '329': '❄️', '332': '❄️', '335': '❄️',
+    '338': '❄️', '350': '🌨️', '353': '🌧️',
+    '356': '🌧️', '359': '🌧️', '362': '🌨️',
+    '365': '🌨️', '368': '🌨️', '371': '❄️',
+    '374': '🌨️', '377': '🌨️', '386': '⛈️',
+    '389': '⛈️', '392': '⛈️', '395': '❄️',
+  };
+  return map[String(code)] || '🌤️';
+}
+
+function renderWeather(cityName, data) {
+  const c = data.current_condition[0];
+  const temp = c.temp_C;
+  const cond = c.weatherDesc[0].value;
+  const humidity = c.humidity;
+  const wind = c.windspeedKmph;
+  const feels = c.FeelsLikeC;
+  const icon = getWttrIcon(c.weatherCode[0]);
+
+  document.getElementById('realtimeWeather').innerHTML = `
+    <div class="rt-weather">
+      <div class="rt-city">${cityName}</div>
+      <div class="rt-main">
+        <div class="rt-temp">${temp}°</div>
+        <div class="rt-info">
+          <div class="rt-condition">${cond} · 体感 ${feels}°</div>
+          <div class="rt-detail">湿度 ${humidity}% · 风速 ${wind}km/h</div>
+        </div>
+      </div>
     </div>
-  `).join('');
+  `;
+  document.getElementById('tripWeatherHint').textContent =
+    `${cityName}历史同期 ${WEATHER_DATA.find(w => w.city === cityName)?.temp || ''} · ${WEATHER_DATA.find(w => w.city === cityName)?.condition || ''}`;
+}
+
+function showWeatherError(msg) {
+  document.getElementById('realtimeWeather').innerHTML =
+    `<div class="rt-error">⚠️ ${msg}</div>`;
+}
+
+function fetchWeather(cityName, nameEn) {
+  showWeatherError('加载中...');
+  const url = `https://wttr.in/${encodeURIComponent(nameEn)}?format=j1`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => renderWeather(cityName, data))
+    .catch(() => showWeatherError('获取失败，请检查网络'));
+}
+
+function selectRealtimeCity(city) {
+  currentRealtimeCity = city;
+  // Update tab active state
+  document.querySelectorAll('.city-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.city === city.name);
+  });
+  // Remove "当前位置" active if any
+  const locTab = document.querySelector('.city-tab[data-city="当前位置"]');
+  if (locTab) locTab.classList.remove('active');
+  fetchWeather(city.name, city.nameEn);
+}
+
+function requestLocation() {
+  const btn = document.getElementById('locateBtn');
+  if (!navigator.geolocation) {
+    showWeatherError('浏览器不支持定位');
+    return;
+  }
+  btn.classList.add('locating');
+  btn.textContent = '📍 定位中...';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(2);
+      const lng = pos.coords.longitude.toFixed(2);
+      btn.classList.remove('locating');
+      btn.classList.add('located');
+      btn.textContent = '📍 已定位';
+      userLocated = true;
+      // Add "当前位置" tab if first time
+      if (!document.querySelector('.city-tab[data-city="当前位置"]')) {
+        const tabsContainer = document.getElementById('cityTabs');
+        const locTab = document.createElement('button');
+        locTab.className = 'city-tab active';
+        locTab.dataset.city = '当前位置';
+        locTab.textContent = '📍 当前位置';
+        locTab.onclick = () => {
+          document.querySelectorAll('.city-tab').forEach(t => t.classList.remove('active'));
+          locTab.classList.add('active');
+          fetchWeatherByCoords(lat, lng);
+        };
+        tabsContainer.insertBefore(locTab, tabsContainer.firstChild);
+      }
+      fetchWeatherByCoords(lat, lng);
+    },
+    (err) => {
+      btn.classList.remove('locating');
+      btn.textContent = '📍 定位失败';
+      btn.style.borderColor = '#ccc';
+      btn.style.color = '#999';
+      setTimeout(() => {
+        btn.textContent = '📍 定位';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 3000);
+      showWeatherError('定位被拒绝，请选择城市查看');
+    },
+    { timeout: 10000 }
+  );
+}
+
+function fetchWeatherByCoords(lat, lng) {
+  showWeatherError('加载中...');
+  const url = `https://wttr.in/${lat},${lng}?format=j1`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      // wttr.in returns city name in the response
+      const cityName = data.nearest_area?.[0]?.areaName?.[0]?.value || '当前位置';
+      renderWeather(cityName, data);
+    })
+    .catch(() => showWeatherError('获取失败'));
+}
+
+function initRealtimeWeather() {
+  const tabsContainer = document.getElementById('cityTabs');
+  tabsContainer.innerHTML = REALTIME_CITIES.map(city =>
+    `<button class="city-tab" data-city="${city.name}">${city.name}</button>`
+  ).join('');
+
+  // Default: select first city (Kunming)
+  selectRealtimeCity(REALTIME_CITIES[0]);
+
+  // Tab click handlers (delegated)
+  tabsContainer.addEventListener('click', e => {
+    const tab = e.target.closest('.city-tab');
+    if (!tab || tab.dataset.city === '当前位置') return;
+    const city = REALTIME_CITIES.find(c => c.name === tab.dataset.city);
+    if (city) selectRealtimeCity(city);
+  });
 }
 
 // ═══════════════════════════════════════════════
@@ -1184,7 +1409,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTimeline();
   initTodo();
   initMembers();
-  initWeather();
+  initRealtimeWeather();
   initBudget();
 
   // Refresh countdown every minute
