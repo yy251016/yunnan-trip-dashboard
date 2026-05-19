@@ -993,10 +993,8 @@ function initTimeline() {
 
     const spotsHtml = day.spots.map(s => {
       const url = SPOT_URLS[s];
-      const emoji = s.charAt(0);
-      const name = s.slice(1);
       if (url) {
-        return `<a class="spot-tag" href="${url}" target="_blank">${emoji} ${name}<span class="spot-tag-arrow"> →</span></a>`;
+        return `<a class="spot-tag" href="${url}" target="_blank">${s}<span class="spot-tag-arrow"> →</span></a>`;
       } else {
         return `<span class="spot-tag">${s}</span>`;
       }
