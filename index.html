@@ -416,6 +416,50 @@ body {
 .section { margin-bottom: 16px; }
 .section:last-child { margin-bottom: 0; }
 
+/* ─── Day Nav ─── */
+.day-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 0 4px;
+}
+.day-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid var(--light-gray);
+  background: white;
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  padding: 0 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  user-select: none;
+}
+.day-nav-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(224,122,95,0.25);
+}
+.day-nav-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.day-nav-btn.active {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  box-shadow: 0 4px 12px rgba(224,122,95,0.35);
+}
+.day-nav-btn .day-label { font-size: 0.65rem; opacity: 0.7; margin-right: 2px; }
+
 /* Leaflet dark theme overrides */
 .leaflet-popup-content-wrapper {
   border-radius: 14px;
@@ -590,6 +634,7 @@ body {
       <div class="header-right">
         <div class="countdown" id="countdown">— 天</div>
         <div class="countdown-label">出发倒计时</div>
+        <div id="versionTag" style="font-size:0.6rem;opacity:0.7;margin-top:4px">v2026.05.19-nav</div>
       </div>
     </div>
     <div class="route-bar">🗺️ 曲靖 → 昆明 → 抚仙湖 → 建水 → 弥勒 → 曲靖</div>
@@ -612,6 +657,7 @@ body {
     <!-- Right: Timeline -->
     <div class="card">
       <div class="card-title">📅 每日行程</div>
+      <div class="day-nav" id="dayNav"></div>
       <div class="timeline" id="timeline"></div>
     </div>
 
@@ -1009,7 +1055,7 @@ function initTimeline() {
       : '';
 
     container.innerHTML += `
-      <div class="day-item">
+      <div class="day-item" id="day${day.num}">
         <div class="day-num ${dayClass}">
           <span class="num">Day</span>${day.num}
         </div>
@@ -1180,11 +1226,61 @@ function initBudget() {
 }
 
 // ═══════════════════════════════════════════════
+// DAY NAV
+// ═══════════════════════════════════════════════
+function initDayNav() {
+  const nav = document.getElementById('dayNav');
+  if (!nav) return;
+
+  nav.innerHTML = DAYS.map(day => {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const dayDate = new Date(TRIP_START);
+    dayDate.setDate(dayDate.getDate() + day.num - 1);
+    const isPast = dayDate < today;
+    const isToday = dayDate.getTime() === today.getTime();
+    const isCurrent = isToday || (!isPast && day.num === 1);
+
+    return `<a class="day-nav-btn${isCurrent ? ' active' : ''}" href="#day${day.num}" onclick="return smoothScroll(event, ${day.num})">
+      <span class="day-label">Day</span>${day.num}
+    </a>`;
+  }).join('');
+
+  // Scroll spy: update active button on scroll
+  const btnEls = nav.querySelectorAll('.day-nav-btn');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        btnEls.forEach(b => b.classList.remove('active'));
+        const day = entry.target.id.replace('day', '');
+        const btn = nav.querySelector(`a[href="#day${day}"]`);
+        if (btn) btn.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  document.querySelectorAll('.day-item[id]').forEach(el => observer.observe(el));
+}
+
+function smoothScroll(event, dayNum) {
+  event.preventDefault();
+  const target = document.getElementById('day' + dayNum);
+  if (!target) return false;
+
+  document.querySelectorAll('.day-nav-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  return false;
+}
+
+// ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   updateCountdown();
   initMap();
+  initDayNav();
   initTimeline();
   initTodo();
   initMembers();
