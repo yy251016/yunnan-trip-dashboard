@@ -982,6 +982,22 @@ function initMap() {
 // ═══════════════════════════════════════════════
 // TIMELINE
 // ═══════════════════════════════════════════════
+function getDayLink(day) {
+  const base = 'https://feishu.cn/docx/';
+  const map = {
+    1: 'Gm2ud6gmFo5brlxa6BccMEWOn7b',
+    2: 'Gm2ud6gmFo5brlxa6BccMEWOn7b',
+    3: 'Gm2ud6gmFo5brlxa6BccMEWOn7b',
+    4: 'P85Ad7Qx4oF0YVxWdNuczavLnYf',
+    5: 'MswYdALa5oiNPmxAlqrc3G5Vngd',
+    6: 'MswYdALa5oiNPmxAlqrc3G5Vngd',
+    7: 'Pz8sd1bgzofU4AxKQsqcbe3Hn1e',
+    8: 'Pz8sd1bgzofU4AxKQsqcbe3Hn1e',
+    9: 'Pz8sd1bgzofU4AxKQsqcbe3Hn1e',
+  };
+  return base + (map[day] || '');
+}
+
 function initTimeline() {
   const container = document.getElementById('timeline');
   const today = new Date();
@@ -1183,25 +1199,13 @@ function initBudget() {
 }
 
 // ═══════════════════════════════════════════════
-// TIMELINE
+// INIT
 // ═══════════════════════════════════════════════
-function getDayLink(day) {
-  const base = 'https://feishu.cn/docx/';
-  const map = {
-    1: 'Gm2ud6gmFo5brlxa6BccMEWOn7b',
-    2: 'Gm2ud6gmFo5brlxa6BccMEWOn7b',
-    3: 'Gm2ud6gmFo5brlxa6BccMEWOn7b',
-    4: 'P85Ad7Qx4oF0YVxWdNuczavLnYf',
-    5: 'MswYdALa5oiNPmxAlqrc3G5Vngd',
-    6: 'MswYdALa5oiNPmxAlqrc3G5Vngd',
-    7: 'Pz8sd1bgzofU4AxKQsqcbe3Hn1e',
-    8: 'Pz8sd1bgzofU4AxKQsqcbe3Hn1e',
-    9: 'Pz8sd1bgzofU4AxKQsqcbe3Hn1e',
-  };
-  return base + (map[day] || '');
-}
-
-function initTimeline() {
+document.addEventListener('DOMContentLoaded', () => {
+  updateCountdown();
+  initMap();
+  initTimeline();
+  initTodo();
   initMembers();
   initWeather();
   initBudget();
