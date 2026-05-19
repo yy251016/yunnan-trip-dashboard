@@ -32,16 +32,71 @@ body {
   background: linear-gradient(135deg, var(--red) 0%, var(--brown) 100%);
   color: white;
   border-radius: 16px;
-  padding: 24px 28px;
+  padding: 18px 20px 14px;
   margin-bottom: 16px;
+}
+.header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: 12px;
 }
-.header-left h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px; }
-.header-left p { opacity: 0.9; font-size: 0.9rem; margin-top: 4px; }
+.trip-title-wrap { flex: 1; }
+.trip-title-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.45);
+  border-radius: 12px;
+  padding: 8px 14px 8px 10px;
+  text-decoration: none;
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: all 0.2s;
+  margin-bottom: 6px;
+}
+.trip-title-btn:hover {
+  background: rgba(255,255,255,0.28);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+.trip-title-icon { font-size: 1.2rem; }
+.trip-title-text { letter-spacing: 0.3px; }
+.trip-title-arrow {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-left: 2px;
+}
+.trip-subtitle {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin-top: 2px;
+  padding-left: 4px;
+}
+.countdown {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+  text-align: right;
+}
+.countdown-label {
+  font-size: 0.72rem;
+  opacity: 0.85;
+  margin-top: 2px;
+  text-align: right;
+}
+.route-bar {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  letter-spacing: 0.3px;
+}
 .header-right { text-align: right; }
 .countdown { font-size: 2rem; font-weight: 800; line-height: 1; }
 .countdown-label { font-size: 0.75rem; opacity: 0.85; margin-top: 2px; }
@@ -394,9 +449,7 @@ body {
 
   /* Header — compact sticky */
   .header {
-    flex-direction: column;
-    text-align: center;
-    padding: 16px 14px;
+    padding: 14px 14px 12px;
     position: sticky;
     top: 0;
     z-index: 200;
@@ -404,10 +457,13 @@ body {
     margin: 0 -12px 10px;
     width: calc(100% + 24px);
   }
-  .header-right { text-align: center; }
-  .header-left p { font-size: 0.78rem; }
-  .countdown { font-size: 2.2rem; }
-  .countries { font-size: 0.72rem; }
+  .header-top { flex-direction: row; align-items: flex-start; }
+  .header-right { text-align: right; flex-shrink: 0; }
+  .trip-title-btn { font-size: 0.95rem; padding: 7px 12px 7px 9px; }
+  .trip-subtitle { font-size: 0.72rem; }
+  .countdown { font-size: 1.9rem; }
+  .countdown-label { font-size: 0.68rem; }
+  .route-bar { font-size: 0.68rem; }
 
   /* Main grid — map first */
   .main-grid { gap: 10px; }
@@ -490,15 +546,23 @@ body {
 
   <!-- Header -->
   <div class="header">
-    <div class="header-left">
-      <h1><a href="https://ycnds9sqsyn7.feishu.cn/docx/BH8Bd7cmDo3HMLxpCpuck36Cn7f" target="_blank" style="color:inherit;text-decoration:none;">🎒 云南9日家庭旅行</a></h1>
-      <p>6月12日 - 6月20日 · 武汉出发 · 曲靖起止 · 自驾穿越 · 5人同行</p>
+    <div class="header-top">
+      <div class="header-left">
+        <div class="trip-title-wrap">
+          <a href="https://ycnds9sqsyn7.feishu.cn/docx/BH8Bd7cmDo3HMLxpCpuck36Cn7f" target="_blank" class="trip-title-btn">
+            <span class="trip-title-icon">🎒</span>
+            <span class="trip-title-text">云南9日家庭旅行</span>
+            <span class="trip-title-arrow">→</span>
+          </a>
+          <p class="trip-subtitle">6月12日 - 6月20日 · 5人 · 自驾穿越</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="countdown" id="countdown">— 天</div>
+        <div class="countdown-label">出发倒计时</div>
+      </div>
     </div>
-    <div class="header-right">
-      <div class="countdown" id="countdown">— 天</div>
-      <div class="countdown-label">出发倒计时</div>
-      <div class="countries">🗺️ 曲靖 → 昆明 → 抚仙湖 → 建水 → 弥勒 → 曲靖</div>
-    </div>
+    <div class="route-bar">🗺️ 曲靖 → 昆明 → 抚仙湖 → 建水 → 弥勒 → 曲靖</div>
   </div>
 
   <!-- Main Grid -->
