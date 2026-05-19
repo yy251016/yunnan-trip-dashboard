@@ -702,14 +702,14 @@ const CITIES = [
 
 // Attraction markers (lat, lng, url, icon)
 const ATTRACTIONS = [
-  { name: '🦁 云南野生动物园', lat: 25.0728, lng: 102.6138, url: 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc' },
-  { name: '🌊 滇池海埂公园',   lat: 25.0172, lng: 102.6627, url: 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg' },
-  { name: '🌊 抚仙湖月亮湾',   lat: 24.8269, lng: 102.9217, url: 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif' },
-  { name: '🏛️ 朱家花园',       lat: 23.6386, lng: 102.8286, url: 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg' },
-  { name: '🏛️ 朝阳楼',         lat: 23.6241, lng: 102.8349, url: 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc' },
-  { name: '🚂 米轨小火车',     lat: 23.6072, lng: 102.8128, url: 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb' },
-  { name: '🏛️ 西门大板井',     lat: 23.6059, lng: 102.8175, url: 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg' },
-  { name: '🌸 弥勒东风韵',     lat: 24.3633, lng: 103.4117, url: 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb' },
+  { name: '[动物园] 云南野生动物园', lat: 25.0728, lng: 102.6138, url: 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc' },
+  { name: '◆ 滇池海埂公园',   lat: 25.0172, lng: 102.6627, url: 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg' },
+  { name: '◆ 抚仙湖月亮湾',   lat: 24.8269, lng: 102.9217, url: 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif' },
+  { name: '❖ 朱家花园',       lat: 23.6386, lng: 102.8286, url: 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg' },
+  { name: '❖ 朝阳楼',         lat: 23.6241, lng: 102.8349, url: 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc' },
+  { name: '✿ 米轨小火车',     lat: 23.6072, lng: 102.8128, url: 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb' },
+  { name: '❖ 西门大板井',     lat: 23.6059, lng: 102.8175, url: 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg' },
+  { name: '❀ 弥勒东风韵',     lat: 24.3633, lng: 103.4117, url: 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb' },
 ];
 
 // Route lines between cities [from_idx, to_idx]
@@ -725,17 +725,17 @@ const ROUTE = [
 
 // Day-by-day itinerary
 const SPOT_URLS = {
-  '🦁 云南野生动物园': 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc',
-  '🌊 滇池': 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg',
-  '🌊 抚仙湖': 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif',
-  '🏖️ 月亮湾湿地公园': 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif',
-  '🏛️ 朱家花园': 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg',
-  '🏛️ 朝阳楼': 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc',
-  '🚂 米轨小火车': 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb',
-  '🏛️ 西门大板井': 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg',
-  '🌸 弥勒东风韵': 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb',
-  '🐠 花都海洋世界': null,
-  '🌿 翠湖': null,
+  '[动物园] 云南野生动物园': 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc',
+  '◆ 滇池': 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg',
+  '◆ 抚仙湖': 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif',
+  '◇ 月亮湾湿地公园': 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif',
+  '❖ 朱家花园': 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg',
+  '❖ 朝阳楼': 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc',
+  '✿ 米轨小火车': 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb',
+  '❖ 西门大板井': 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg',
+  '❀ 弥勒东风韵': 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb',
+  '☆ 花都海洋世界': null,
+  '• 翠湖': null,
 };
 
 const DAYS = [
@@ -750,7 +750,7 @@ const DAYS = [
   {
     num: 2, date: '6月13日（周六）',
     route: '曲靖 → 昆明 → 酒店',
-    spots: ['🦁 云南野生动物园'],
+    spots: ['[动物园] 云南野生动物园'],
     hotel: '🏨 昆明',
     driveNote: '曲靖→昆明 驾车约1.5h',
     type: 'normal'
@@ -758,7 +758,7 @@ const DAYS = [
   {
     num: 3, date: '6月14日（周日）',
     route: '昆明全天慢游',
-    spots: ['🌊 滇池', '🐠 花都海洋世界', '🌿 翠湖'],
+    spots: ['◆ 滇池', '☆ 花都海洋世界', '• 翠湖'],
     hotel: '🏨 昆明',
     driveNote: '翠湖→滇池 25min / 滇池→花都（斗南） 45min',
     type: 'normal'
@@ -766,7 +766,7 @@ const DAYS = [
   {
     num: 4, date: '6月15日（周一）',
     route: '昆明 → 抚仙湖',
-    spots: ['🌊 抚仙湖', '🏖️ 月亮湾湿地公园'],
+    spots: ['◆ 抚仙湖', '◇ 月亮湾湿地公园'],
     hotel: '🏨 抚仙湖',
     driveNote: '昆明→抚仙湖 驾车约2h',
     type: 'normal'
@@ -774,7 +774,7 @@ const DAYS = [
   {
     num: 5, date: '6月16日（周二）',
     route: '抚仙湖 → 建水',
-    spots: ['🏛️ 朱家花园', '🏛️ 朝阳楼'],
+    spots: ['❖ 朱家花园', '❖ 朝阳楼'],
     hotel: '🏨 建水',
     driveNote: '抚仙湖→建水 驾车约1.5h',
     type: 'normal'
@@ -782,7 +782,7 @@ const DAYS = [
   {
     num: 6, date: '6月17日（周三）',
     route: '建水全天深度游',
-    spots: ['🚂 米轨小火车', '🏛️ 西门大板井'],
+    spots: ['✿ 米轨小火车', '❖ 西门大板井'],
     hotel: '🏨 建水',
     driveNote: '',
     type: 'normal'
@@ -790,7 +790,7 @@ const DAYS = [
   {
     num: 7, date: '6月18日（周四）',
     route: '建水 → 弥勒 → 曲靖',
-    spots: ['🌸 弥勒东风韵'],
+    spots: ['❀ 弥勒东风韵'],
     hotel: '🏠 娇娇家',
     driveNote: '建水→弥勒 1.5h / 弥勒→曲靖 2h',
     type: 'travel'
@@ -946,16 +946,16 @@ function initMap() {
 
   // Attraction markers — prominent pins with labels
   const SPOT_ICONS = {
-    '🦁': '#C8A87A', '🌊': '#5B8FA8', '🏛': '#9C6644',
-    '🚂': '#8B6F47', '🌸': '#D4A0B9',
+    '[动物园]': '#C8A87A', '◆': '#5B8FA8', '❖': '#9C6644',
+    '火车': '#8B6F47', '花': '#D4A0B9',
   };
   ATTRACTIONS.forEach(a => {
     // Determine color by emoji
     let color = '#5B8FA8';
     const icon = a.name.split(' ')[0];
-    if (icon === '🦁') color = '#C8A87A';
-    else if (icon === '🌊') color = '#5B8FA8';
-    else if (icon === '🏛') color = '#9C6644';
+    if (icon === '[动物园]') color = '#C8A87A';
+    else if (icon === '◆') color = '#5B8FA8';
+    else if (icon === '❖') color = '#9C6644';
     else if (icon === '🚂') color = '#8B6F47';
     else if (icon === '🌸') color = '#D4A0B9';
 
