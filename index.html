@@ -203,10 +203,40 @@ body {
 .day-route { font-weight: 600; font-size: 0.85rem; color: var(--text); }
 .day-spots { font-size: 0.78rem; color: #666; margin-top: 2px; display: flex; gap: 4px; flex-wrap: wrap; }
 .spot-tag {
-  background: var(--light-gray);
-  border-radius: 20px;
-  padding: 1px 8px;
+  background: linear-gradient(135deg, #fff 0%, #f8f6f3 100%);
+  border: 1.5px solid #e0dbd5;
+  border-radius: 10px;
+  padding: 4px 10px 4px 8px;
   white-space: nowrap;
+  font-size: 0.78rem;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+.spot-tag:hover {
+  background: linear-gradient(135deg, var(--red) 0%, var(--brown) 100%);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(180,100,70,0.3);
+}
+.spot-tag:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.spot-tag-arrow {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  transition: opacity 0.18s;
+  text-decoration: none;
+}
+.spot-tag:hover .spot-tag-arrow {
+  opacity: 1;
 }
 .hotel-tag {
   background: #FFF3E0;
@@ -478,7 +508,7 @@ body {
   .day-date { font-size: 0.68rem; }
   .day-route { font-size: 0.82rem; }
   .day-spots { gap: 4px; }
-  .spot-tag { font-size: 0.72rem; padding: 1px 7px; }
+  .spot-tag { font-size: 0.75rem; padding: 5px 10px 5px 8px; }
 
   /* Todo — big touch targets */
   .todo-item {
@@ -619,7 +649,7 @@ body {
   <!-- Footer -->
   <div class="footer">
     🎒 途管家出品 · 数据来源：飞书文档 V2.0<br>
-    景点攻略点击地图标记跳转 · 待办勾选后本地保存
+    每日景点名可点击 → 跳攻略 · 地图标记也可点击
   </div>
 
 </div>
@@ -694,6 +724,20 @@ const ROUTE = [
 ];
 
 // Day-by-day itinerary
+const SPOT_URLS = {
+  '🦁 云南野生动物园': 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc',
+  '🌊 滇池': 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg',
+  '🌊 抚仙湖': 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif',
+  '🏖️ 月亮湾湿地公园': 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif',
+  '🏛️ 朱家花园': 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg',
+  '🏛️ 朝阳楼': 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc',
+  '🚂 米轨小火车': 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb',
+  '🏛️ 西门大板井': 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg',
+  '🌸 弥勒东风韵': 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb',
+  '🐠 花都海洋世界': null,
+  '🌿 翠湖': null,
+};
+
 const DAYS = [
   {
     num: 1, date: '6月12日（周五）',
@@ -959,9 +1003,16 @@ function initTimeline() {
     const isToday = dayDate.getTime() === today.getTime();
     const dayClass = isToday ? 'today' : isPast ? 'past' : 'future';
 
-    const spotsHtml = day.spots.map(s =>
-      `<span class="spot-tag">${s}</span>`
-    ).join('');
+    const spotsHtml = day.spots.map(s => {
+      const url = SPOT_URLS[s];
+      const emoji = s.charAt(0);
+      const name = s.slice(1);
+      if (url) {
+        return `<a class="spot-tag" href="${url}" target="_blank">${emoji} ${name}<span class="spot-tag-arrow"> →</span></a>`;
+      } else {
+        return `<span class="spot-tag">${s}</span>`;
+      }
+    }).join('');
 
     const hotelHtml = day.hotel && day.hotel !== '—'
       ? `<span class="hotel-tag">${day.hotel}</span>`
