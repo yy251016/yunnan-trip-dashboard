@@ -700,16 +700,16 @@ const CITIES = [
   { name: '弥勒',     lat: 24.4117,  lng: 103.4473, type: 'city' },
 ];
 
-// Attraction markers (lat, lng, url, icon)
+// Attraction markers (lat, lng, url, label, color)
 const ATTRACTIONS = [
-  { name: '🦁 云南野生动物园', lat: 25.0728, lng: 102.6138, url: 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc' },
-  { name: '🌊 滇池海埂公园',   lat: 25.0172, lng: 102.6627, url: 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg' },
-  { name: '🌊 抚仙湖月亮湾',   lat: 24.8269, lng: 102.9217, url: 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif' },
-  { name: '🏛️ 朱家花园',       lat: 23.6386, lng: 102.8286, url: 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg' },
-  { name: '🏛️ 朝阳楼',         lat: 23.6241, lng: 102.8349, url: 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc' },
-  { name: '🚂 米轨小火车',     lat: 23.6072, lng: 102.8128, url: 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb' },
-  { name: '🏛️ 西门大板井',     lat: 23.6059, lng: 102.8175, url: 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg' },
-  { name: '🌸 弥勒东风韵',     lat: 24.3633, lng: 103.4117, url: 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb' },
+  { name: '云南野生动物园', label: '动物园', color: '#C8A87A', lat: 25.0728, lng: 102.6138, url: 'https://feishu.cn/docx/GWrtdAsXao26cHxyGDicIh5Inrc' },
+  { name: '滇池海埂公园',   label: '滇池',   color: '#5B8FA8', lat: 25.0172, lng: 102.6627, url: 'https://feishu.cn/docx/O7rFdJyE9oOq79x7nGccm4oYnyg' },
+  { name: '抚仙湖月亮湾',   label: '抚仙湖', color: '#5B8FA8', lat: 24.8269, lng: 102.9217, url: 'https://feishu.cn/docx/LwJadfusToGIaKxKNcXcqSN6nif' },
+  { name: '朱家花园',       label: '朱家',   color: '#9C6644', lat: 23.6386, lng: 102.8286, url: 'https://feishu.cn/docx/PoT9d13J1oRGVrx9HIqc7T8dnRg' },
+  { name: '朝阳楼',         label: '朝阳楼', color: '#9C6644', lat: 23.6241, lng: 102.8349, url: 'https://feishu.cn/docx/SIVodbXBqoOoWmxiZ0KcV8e7npc' },
+  { name: '米轨小火车',     label: '小火车', color: '#8B6F47', lat: 23.6072, lng: 102.8128, url: 'https://feishu.cn/docx/TcQjd4l8Roe9CDxhZvUcQP5HnSb' },
+  { name: '西门大板井',     label: '大板井', color: '#9C6644', lat: 23.6059, lng: 102.8175, url: 'https://feishu.cn/docx/Uw2OdBrbIoa5dGxdMrjcioHtnZg' },
+  { name: '弥勒东风韵',     label: '东风韵', color: '#D4A0B9', lat: 24.3633, lng: 103.4117, url: 'https://feishu.cn/docx/UkzZdIp5FoV4xwxi7RycI8a6nkb' },
 ];
 
 // Route lines between cities [from_idx, to_idx]
@@ -945,37 +945,25 @@ function initMap() {
   });
 
   // Attraction markers — prominent pins with labels
-  const SPOT_ICONS = {
-    '🦁': '#C8A87A', '◆': '#5B8FA8', '❖': '#9C6644',
-    '火车': '#8B6F47', '花': '#D4A0B9',
-  };
   ATTRACTIONS.forEach(a => {
-    // Determine color by emoji
-    let color = '#5B8FA8';
-    const icon = a.name.split(' ')[0];
-    if (icon === '🦁') color = '#C8A87A';
-    else if (icon === '◆') color = '#5B8FA8';
-    else if (icon === '❖') color = '#9C6644';
-    else if (icon === '🚂') color = '#8B6F47';
-    else if (icon === '🌸') color = '#D4A0B9';
-
     const spotIcon = L.divIcon({
       html: `<div style="
         width:34px; height:34px;
-        background:${color};
+        background:${a.color};
         border-radius:50% 50% 50% 0;
         transform:rotate(-45deg);
         border:3px solid rgba(255,255,255,0.9);
         box-shadow:0 3px 10px rgba(0,0,0,0.5);
         display:flex; align-items:center; justify-content:center;
-        font-size:14px;
-      "><span style="transform:rotate(45deg)">${icon}</span></div>`,
+        font-size:11px; font-weight:700; color:white;
+        font-family:'PingFang SC','Microsoft YaHei',sans-serif;
+      "><span style="transform:rotate(45deg)">${a.label}</span></div>`,
       className: '', iconSize: [34, 34], iconAnchor: [0, 34]
     });
 
     L.marker([a.lat, a.lng], { icon: spotIcon, zIndexOffset: 100 })
       .addTo(map)
-      .bindPopup(`<div class="spot-popup"><b>${a.name}</b><p>📍 点击下方按钮打开景点攻略</p><a href="${a.url}" target="_blank" class="spot-popup-btn">🔗 查看详细攻略</a></div>`)
+      .bindPopup(`<div class="spot-popup"><b>${a.name}</b><p>点击打开详细攻略</p><a href="${a.url}" target="_blank" class="spot-popup-btn">查看攻略 →</a></div>`)
       .bindTooltip(a.name, {
         permanent: false,
         direction: 'right',
